@@ -3,6 +3,8 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 use Test::More;
 
 use Card::Magnetic;
@@ -17,4 +19,6 @@ my $card = Card::Magnetic->new();
 
 $card->stripe( $stripe );
 
-$card->parse();
+my $strips = $card->parse();
+
+print Dumper $card;

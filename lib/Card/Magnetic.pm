@@ -7,7 +7,7 @@ use warnings;
 
 =head1 NAME
 
-Card::Magnetic - Magnetic stripe parser and builder
+Card::Magnetic - Magnetic stripe parser
 
 =head1 SYNOPSIS
 
@@ -40,10 +40,23 @@ Parse the stripe and create a internal hash hashref structure with the exploded 
 
     {
         stripe => "full stripe content",
+        tracks => [ ], #array with the tracks on the strip
         track1 => { }, # hash with the fields on track 1
         track2 => { }, # Same as track 1, will have a hash with the track2 fields
         track3 => { }, # Track3 
     }
+
+=head2 track1
+
+Return the string of the track, 
+
+=head2 track2
+
+Return the string of the track, 
+
+=head2 track3
+
+Return the string of the track, 
 
 =head1 AUTHOR
 
@@ -109,6 +122,7 @@ sub parse{
                 CVV             => $7,
             };
         }
+        $self->{ tracks }[0] = $track1;
     }
     #track2
     if( $stripe =~ /\;[\w\^]+\?\n/ and ( length $& < 39 ) ){  # stripe...
@@ -125,6 +139,7 @@ sub parse{
                 CVV             => $5,
             };
         }
+        $self->{ tracks }[1] = $track2;
     }
     #track3
     if( $stripe =~ /\;[\w\^]+\?\n/ ){
@@ -175,7 +190,23 @@ sub parse{
                 CRYPTO_CHECK    => $+{cryptocheck},
            };
         }
+        $self->{ tracks }[2] = $track3;
     }
+}
+
+sub track1 {
+    my ( $self ) = @_;
+    return defined $self->{ tracks }[ 0 ]? $self->{ tracks }[ 0 ] : undef;
+}
+
+sub track2 {
+    my ( $self ) = @_;
+    return defined $self->{ tracks }[ 1 ]? $self->{ tracks }[ 1 ] : undef;
+}
+
+sub track3 {
+    my ( $self ) = @_;
+    return defined $self->{ tracks }[ 2 ]? $self->{ tracks }[ 2 ] : undef;
 }
 
 1;
